@@ -1,23 +1,33 @@
-const express = require("express")
-const app = express()
-const bcrypt = require("bcrypt")
-app.use(express.json())
+const express = require("express");
+const bcrypt = require("bcryptjs");
 
-let userDetails = [];
+const app = express();
+app.use(express.json()); // Ensure req.body is parsed
 
-app.post("/register",async(req,res) => {
-    const {username,password} = req.body 
-    if (!username || !password){
-        res.send("username or password Required")
+const userDetails = []; // Temporary storage (Replace with DB in production)
+
+app.post("/register", async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: "Username and password are required" });
     }
-    if (userDetails.find(users =>{users.username === username})) {
-        res.send("user already exists")
-    }else{
-        const hashedPassword = await bcrypt.hash(password,10)
-        userDetails.push({username,password:hashedPassword})
-        res.send("user Registered successfully")
+
+    // Properly checking if user exists
+    const userExists = userDetails.find(user => user.username === username);
+    if (userExists) {
+        return res.status(400).json({ error: "User already exists" });
     }
-    })
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    userDetails.push({ username, password: hashedPassword });
+
+    return res.status(201).json({ message: "User registered successfully" });
+});
+
+// Start the server
+
+
     app.get("/",(req,res)=>{
         res.send("Hi Tejesh")
     })
