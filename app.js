@@ -19,7 +19,7 @@ app.post("/register",async(req,res) => {
     }
     })
     app.get("/",(req,res)=>{
-        res.send(userDetails)
+        res.send("Hi Tejesh")
     })
     
     app.post("/login",async (req,res) => {
